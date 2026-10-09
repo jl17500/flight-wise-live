@@ -1,6 +1,7 @@
 @import "tailwindcss" source(none);
 @source "../src";
 @import "tw-animate-css";
+@import "./flightfix-styles.css";
 
 @custom-variant dark (&:is(.dark *));
 
@@ -79,7 +80,7 @@
   --primary-foreground: oklch(1 0 0);
   --secondary: oklch(0.955 0.01 260);
   --secondary-foreground: oklch(0.22 0.05 265);
-  --muted: oklch(0.955 0.01 260);
+  --muted: oklch(0.58 0.05 260);
   --muted-foreground: oklch(0.5 0.03 260);
   --accent: oklch(0.94 0.03 258);
   --accent-foreground: oklch(0.45 0.2 258);
@@ -147,19 +148,56 @@
     border-color: var(--color-border);
   }
 
-  body {
-    background-color: var(--color-background);
-    color: var(--color-foreground);
-  }
 }
 
-@layer components {
-  .ff-card { @apply rounded-xl border border-border bg-card shadow-[var(--shadow-card)]; }
-  .pill { @apply inline-flex items-center gap-1 rounded-full px-2.5 py-0.5 text-xs font-medium whitespace-nowrap; }
-  .pill-red { @apply bg-destructive/10 text-destructive; }
-  .pill-green { @apply bg-success/12 text-success; }
-  .pill-amber { @apply bg-warning/12 text-warning; }
-  .pill-blue { @apply bg-info/10 text-info; }
-  .pill-gray { @apply bg-muted text-muted-foreground; }
-  .pill-orange { @apply bg-alert/12 text-alert; }
+/* Integration rules only; the original demo stylesheet remains unchanged. */
+:root { --logo-fill: oklch(0.21 0.008 260); --logo-stroke: oklch(1 0 0); --demo-green: oklch(0.69 0.15 162); --demo-amber: oklch(0.66 0.12 78); --demo-orange: oklch(0.67 0.17 48); --demo-blue: oklch(0.57 0.22 258); --demo-gray: oklch(0.65 0.03 260); }
+.logo-fill { fill:var(--logo-fill); } .logo-path { stroke:var(--logo-stroke); }
+.topbar { position:sticky; top:0; z-index:25; backdrop-filter:blur(12px); }
+.layout { min-width:0; } .main { min-width:0; }
+dialog[open] { display:flex; flex-direction:column; overflow:hidden; }
+dialog { margin:auto; }
+@media(min-width:761px) { :root { --sidebar:var(--sidebar-width,220px); } }
+dialog .modal-head, dialog .modal-actions { flex:none; }
+dialog .modal-body { overflow:auto; min-height:0; }
+.preview-tools { position:sticky; top:0; background:var(--card); z-index:2; padding-bottom:12px; padding-top:4px; }
+.assistant-phone .phone-screen { display:flex; flex-direction:column; }
+.assistant-phone .phone-body { display:flex; flex-direction:column; min-height:0; }
+.assistant-phone .chat-log { height:320px; min-height:320px; max-height:320px; overscroll-behavior:contain; }
+.assistant-phone .chat-input { flex:none; }
+.demo-dot.rebooked,.demo-dot.message { color:var(--demo-green); }
+.demo-dot.refund { color:var(--demo-amber); }
+.demo-dot.help,.demo-dot.blocked { color:var(--demo-orange); }
+.demo-dot.staged { color:var(--demo-blue); }
+.demo-dot.declined,.demo-dot.expired { color:var(--demo-gray); }
+.ticket-end { text-align:right; }
+.passenger-header { padding:17px 26px; border-bottom:1px solid var(--line); background:var(--card); font-weight:650; }
+.passenger-header .icon { color:var(--blue); }
+.recover-main { max-width:440px; margin:auto; padding:24px 16px; }
+.recover-columns { display:grid; gap:24px; align-items:start; }
+.recover-main .phone-shell { width:100%; }
+.error-banner { margin-bottom:16px; }
+.context-recipients { white-space:normal; text-align:right; }
+.metric-label { overflow-wrap:break-word; }
+.settings-zone { max-width:175px; }
+.workflow-svg { color:var(--ink); }
+.workflow-line { stroke:var(--demo-gray); fill:none; }
+:root {
+ --workflow-code:oklch(0.968 0.006 260); --workflow-code-border:oklch(0.821 0.029 257);
+ --workflow-agent:oklch(0.953 0.027 299); --workflow-agent-border:oklch(0.706 0.126 298);
+ --workflow-gate:oklch(0.97 0.024 75); --workflow-gate-border:oklch(0.827 0.11 78);
+ --workflow-write:oklch(0.967 0.027 68); --workflow-write-border:oklch(0.81 0.099 68);
+ --workflow-output:oklch(0.966 0.019 163); --workflow-output-border:oklch(0.795 0.097 163);
+ --workflow-read:oklch(0.959 0.02 259); --workflow-read-border:oklch(0.769 0.098 258);
 }
+.workflow-node { --node-fill:var(--workflow-code); --node-border:var(--workflow-code-border); fill:var(--node-fill); stroke:var(--node-border); }
+.workflow-node.gate { --node-fill:var(--workflow-gate); --node-border:var(--workflow-gate-border); }
+.workflow-node.agent { --node-fill:var(--workflow-agent); --node-border:var(--workflow-agent-border); }
+.workflow-node.write { --node-fill:var(--workflow-write); --node-border:var(--workflow-write-border); }
+.workflow-node.output { --node-fill:var(--workflow-output); --node-border:var(--workflow-output-border); }
+.workflow-node.read { --node-fill:var(--workflow-read); --node-border:var(--workflow-read-border); }
+.wf-legend i { background:var(--node-fill); border:1px solid var(--node-border); }
+.workflow-title { fill:var(--ink); } .workflow-subtitle { fill:var(--muted); }
+@media(min-width:1000px) { .recover-main { max-width:920px; } .recover-columns { grid-template-columns:1fr 1fr; } }
+@media(max-width:760px) { .sidebar { position:sticky; top:0; z-index:30; } .topbar { top:128px; } }
+@media(max-width:600px) { .standalone-chat .phone-shell { height:100dvh; max-height:100dvh; } .standalone-chat .phone-screen { height:100%; } .standalone-chat .phone-body { flex:1; overflow:hidden; } .standalone-chat .chat-log { flex:1; height:auto; min-height:0; max-height:none; } .standalone-chat .chips { flex:none; max-height:100px; overflow:auto; } }

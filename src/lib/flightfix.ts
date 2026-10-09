@@ -23,6 +23,10 @@ export interface OpsData {
     status: FlightStatus;
     reason: string | null;
     delay_minutes: number;
+    risk_level: "high" | "medium" | "low" | "normal";
+    est_risk_pct: number;
+    risk_signal: string;
+    departs_at?: string;
     date: string;
     departs: string;
     arrives: string;

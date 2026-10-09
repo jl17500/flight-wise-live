@@ -8,3 +8,7 @@
 > Commits you push to the connected branch sync back to Lovable and show up in
 > the editor, so keep the branch in a working state.
 <!-- LOVABLE:END -->
+
+- Keep original demo CSS in a separate unchanged global stylesheet and put integration-only scrolling rules in the main stylesheet, so reference fidelity stays auditable.
+- Use shared React FlightFix screens for preview and standalone recovery, so both invoke the same live passenger/chat APIs and refresh shared query keys.
+- Keep simulated message delivery and display preferences browser-local; flight, passenger and recovery records are authoritative from n8n.
