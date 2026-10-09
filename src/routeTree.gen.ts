@@ -10,11 +10,47 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as AnalyticsRouteImport } from './routes/analytics'
+import { Route as AssistantRouteImport } from './routes/assistant'
+import { Route as FlightsRouteImport } from './routes/flights'
+import { Route as MessagesRouteImport } from './routes/messages'
+import { Route as PassengersRouteImport } from './routes/passengers'
+import { Route as SettingsRouteImport } from './routes/settings'
 import { Route as RecoverTokenRouteImport } from './routes/recover.$token'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AnalyticsRoute = AnalyticsRouteImport.update({
+  id: '/analytics',
+  path: '/analytics',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AssistantRoute = AssistantRouteImport.update({
+  id: '/assistant',
+  path: '/assistant',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const FlightsRoute = FlightsRouteImport.update({
+  id: '/flights',
+  path: '/flights',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const MessagesRoute = MessagesRouteImport.update({
+  id: '/messages',
+  path: '/messages',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PassengersRoute = PassengersRouteImport.update({
+  id: '/passengers',
+  path: '/passengers',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SettingsRoute = SettingsRouteImport.update({
+  id: '/settings',
+  path: '/settings',
   getParentRoute: () => rootRouteImport,
 } as any)
 const RecoverTokenRoute = RecoverTokenRouteImport.update({
@@ -25,27 +61,76 @@ const RecoverTokenRoute = RecoverTokenRouteImport.update({
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/analytics': typeof AnalyticsRoute
+  '/assistant': typeof AssistantRoute
+  '/flights': typeof FlightsRoute
+  '/messages': typeof MessagesRoute
+  '/passengers': typeof PassengersRoute
+  '/settings': typeof SettingsRoute
   '/recover/$token': typeof RecoverTokenRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/analytics': typeof AnalyticsRoute
+  '/assistant': typeof AssistantRoute
+  '/flights': typeof FlightsRoute
+  '/messages': typeof MessagesRoute
+  '/passengers': typeof PassengersRoute
+  '/settings': typeof SettingsRoute
   '/recover/$token': typeof RecoverTokenRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/analytics': typeof AnalyticsRoute
+  '/assistant': typeof AssistantRoute
+  '/flights': typeof FlightsRoute
+  '/messages': typeof MessagesRoute
+  '/passengers': typeof PassengersRoute
+  '/settings': typeof SettingsRoute
   '/recover/$token': typeof RecoverTokenRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/recover/$token'
+  fullPaths:
+    | '/'
+    | '/analytics'
+    | '/assistant'
+    | '/flights'
+    | '/messages'
+    | '/passengers'
+    | '/settings'
+    | '/recover/$token'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/recover/$token'
-  id: '__root__' | '/' | '/recover/$token'
+  to:
+    | '/'
+    | '/analytics'
+    | '/assistant'
+    | '/flights'
+    | '/messages'
+    | '/passengers'
+    | '/settings'
+    | '/recover/$token'
+  id:
+    | '__root__'
+    | '/'
+    | '/analytics'
+    | '/assistant'
+    | '/flights'
+    | '/messages'
+    | '/passengers'
+    | '/settings'
+    | '/recover/$token'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  AnalyticsRoute: typeof AnalyticsRoute
+  AssistantRoute: typeof AssistantRoute
+  FlightsRoute: typeof FlightsRoute
+  MessagesRoute: typeof MessagesRoute
+  PassengersRoute: typeof PassengersRoute
+  SettingsRoute: typeof SettingsRoute
   RecoverTokenRoute: typeof RecoverTokenRoute
 }
 
@@ -56,6 +141,48 @@ declare module '@tanstack/react-router' {
       path: '/'
       fullPath: '/'
       preLoaderRoute: typeof IndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/analytics': {
+      id: '/analytics'
+      path: '/analytics'
+      fullPath: '/analytics'
+      preLoaderRoute: typeof AnalyticsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/assistant': {
+      id: '/assistant'
+      path: '/assistant'
+      fullPath: '/assistant'
+      preLoaderRoute: typeof AssistantRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/flights': {
+      id: '/flights'
+      path: '/flights'
+      fullPath: '/flights'
+      preLoaderRoute: typeof FlightsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/messages': {
+      id: '/messages'
+      path: '/messages'
+      fullPath: '/messages'
+      preLoaderRoute: typeof MessagesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/passengers': {
+      id: '/passengers'
+      path: '/passengers'
+      fullPath: '/passengers'
+      preLoaderRoute: typeof PassengersRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/settings': {
+      id: '/settings'
+      path: '/settings'
+      fullPath: '/settings'
+      preLoaderRoute: typeof SettingsRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/recover/$token': {
@@ -70,6 +197,12 @@ declare module '@tanstack/react-router' {
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  AnalyticsRoute: AnalyticsRoute,
+  AssistantRoute: AssistantRoute,
+  FlightsRoute: FlightsRoute,
+  MessagesRoute: MessagesRoute,
+  PassengersRoute: PassengersRoute,
+  SettingsRoute: SettingsRoute,
   RecoverTokenRoute: RecoverTokenRoute,
 }
 export const routeTree = rootRouteImport
