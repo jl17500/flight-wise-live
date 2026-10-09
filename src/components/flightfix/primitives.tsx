@@ -37,7 +37,7 @@ export function Icon({name, className = ""}: {name: string; className?: string})
   bot: <><rect x="4" y="8" width="16" height="12" rx="3"/><path d="M12 4v4M9 13h.01M15 13h.01M9.5 17h5"/></>,
   tool: <><path d="M14.5 6.5a4 4 0 0 0-5.3 5.3L3 18l3 3 6.2-6.2a4 4 0 0 0 5.3-5.3l-2.6 2.6-2.4-.6-.6-2.4Z"/></>,
  };
- return <svg className={`icon ${className}`} viewBox="0 0 24 24" aria-hidden="true">{paths[name] ?? paths.info}</svg>;
+ return <svg className={`icon ${className}`} viewBox="0 0 24 24" aria-hidden="true">{paths[name] ?? paths['info']}</svg>;
 }
 export function Logo() {return <svg className="logo" viewBox="0 0 28 28" aria-hidden="true"><rect x="1" y="1" width="26" height="26" rx="5.5" className="logo-fill"/><path d="M9 8.5h10.5M9 8.5v11M9 14h8.3" fill="none" className="logo-path" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/></svg>;}
 export function Chevron() {return <svg className="long-chevron" viewBox="0 0 15 56" aria-hidden="true"><path d="m2 3 11 25L2 53"/></svg>;}
