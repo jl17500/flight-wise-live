@@ -148,21 +148,6 @@
     border-color: var(--color-border);
   }
 
-  body {
-    background-color: var(--color-background);
-    color: var(--color-foreground);
-  }
-}
-
-@layer components {
-  .ff-card { @apply rounded-xl border border-border bg-card shadow-[var(--shadow-card)]; }
-  .pill { @apply inline-flex items-center gap-1 rounded-full px-2.5 py-0.5 text-xs font-medium whitespace-nowrap; }
-  .pill-red { @apply bg-destructive/10 text-destructive; }
-  .pill-green { @apply bg-success/12 text-success; }
-  .pill-amber { @apply bg-warning/12 text-warning; }
-  .pill-blue { @apply bg-info/10 text-info; }
-  .pill-gray { @apply bg-muted text-muted-foreground; }
-  .pill-orange { @apply bg-alert/12 text-alert; }
 }
 
 /* Integration rules only; the original demo stylesheet remains unchanged. */
