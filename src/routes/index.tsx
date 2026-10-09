@@ -118,7 +118,7 @@ function Body({ d }: { d: OpsData }) {
                 <tr key={f.flight_no} className="border-t border-border">
                   <td className="px-5 py-3 font-semibold">{f.flight_no}<div className="text-xs font-normal text-muted-foreground">{f.date}</div></td>
                   <td className="px-5 py-3">{f.origin} → {f.destination}</td>
-                  <td className="px-5 py-3"><span className={`pill ${FLIGHT[f.status]}`}>{f.status === "delayed" ? `Delayed ${f.delay_minutes}m` : f.status[0].toUpperCase() + f.status.slice(1)}</span></td>
+                  <td className="px-5 py-3"><span className={`pill ${FLIGHT[f.status]}`}>{f.status === "delayed" ? `Delayed ${f.delay_minutes}m` : f.status.charAt(0).toUpperCase() + f.status.slice(1)}</span></td>
                   <td className="px-5 py-3 whitespace-nowrap">{f.departs}</td>
                   <td className="px-5 py-3 whitespace-nowrap">{f.arrives}</td>
                   <td className="px-5 py-3 text-muted-foreground">{f.reason ?? "—"}</td>
