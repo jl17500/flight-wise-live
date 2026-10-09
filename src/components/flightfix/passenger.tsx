@@ -27,7 +27,7 @@ export function PassengerContent({d,onAsk,standalone=false}: {d:PassengerData;on
  return standalone?content:<div className="phone-shell"><div className="phone-screen"><div className="phone-brand"><Icon name="plane"/>FlightFix</div>{content}</div></div>;
 }
 const DEFAULT_CHIPS=['What happened to my flight?','What are my options?','Book the earliest flight','Land before 3 PM, otherwise refund me','Anything before 6?',"I'd like a refund instead",'Book a flight and refund me too','Can I get a hotel voucher?'];
-export function AssistantChat({token,d,initialMessage,onConsumed,standalone=false,onClose,refreshOps=false,dataVersion}: {token:string;d:PassengerData;apiRef?:React.RefObject<ChatHandle|null>;initialMessage?:string;onConsumed?:()=>void;standalone?:boolean;onClose?:()=>void;refreshOps?:boolean;dataVersion?:string}) {
+export function AssistantChat({token,d,initialMessage,onConsumed,standalone=false,onClose,refreshOps=false,dataVersion}: {token:string;d:PassengerData;apiRef?:React.RefObject<ChatHandle|null>;initialMessage?:string|undefined;onConsumed?:()=>void;standalone?:boolean;onClose?:()=>void;refreshOps?:boolean;dataVersion?:string|undefined}) {
  const client=useQueryClient(),[sid,setSid]=useState<string|null>(null),[msgs,setMsgs]=useState<Message[]>([]),[busy,setBusy]=useState(false),[input,setInput]=useState('');
  const busyRef=useRef(false),pendingRef=useRef(initialMessage),generation=useRef(0),loaded=useRef(false);
  const version=dataVersion??d.data_version, sidKey=`ff-sid-${token}`,msgKey=`ff-msgs-${token}`,versionKey=`ff-version-${token}`;
