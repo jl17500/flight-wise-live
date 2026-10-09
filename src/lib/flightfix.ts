@@ -6,6 +6,7 @@ export type FlightStatus = "cancelled" | "delayed" | "scheduled";
 export type RecoveryStatus = "waiting" | "rebooked" | "refund_pending" | "needs_help" | "scheduled";
 
 export interface OpsData {
+  data_version?: string;
   generated_at: string;
   summary: {
     passengers: number;
@@ -68,7 +69,7 @@ export interface OpsData {
   }[];
   activity: {
     time: string;
-    type: "staged" | "rebooked" | "refund" | "declined" | "expired" | "blocked" | "help";
+    type: "staged" | "rebooked" | "refund" | "declined" | "expired" | "blocked" | "help" | "cancel" | "delay";
     title: string;
     booking_ref: string;
     flight_no: string;
@@ -76,6 +77,7 @@ export interface OpsData {
 }
 
 export interface PassengerData {
+  data_version?: string;
   ok: true;
   passenger: { first_name: string; last_name: string; booking_ref: string };
   recovery_status: RecoveryStatus;

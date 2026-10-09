@@ -1,4 +1,5 @@
-# FlightFix class demo simplification
-- [x] Replace sidebar and collapse icons while keeping resize and collapse.
-- [x] Remove three pages, clutter, obsolete links and simplify Settings.
-- [x] Verify remaining routes, table expansion, preview and live chat.
+# FlightFix design and efficiency review
+- [ ] Build unframed Northstar Air recovery page and persistent mobile assistant sheet.
+- [ ] Apply 30-second caching, scoped polling, selective chat refresh and versioned sessions.
+- [ ] Polish activity, recovery progress, refresh control, preview select and passenger actions.
+- [ ] Update real n8n workflow diagram and verify live flows, request counts and mobile spacing.
