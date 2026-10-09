@@ -176,7 +176,7 @@ dialog .modal-body { overflow:auto; min-height:0; }
 .ticket-end { text-align:right; }
 .passenger-header { padding:17px 26px; border-bottom:1px solid var(--line); background:var(--card); font-weight:650; }
 .passenger-header .icon { color:var(--blue); }
-.recover-main { max-width:440px; margin:auto; padding:24px 16px; }
+.recover-main { max-width:1120px; margin:auto; padding:24px 16px; }
 .recover-columns { display:grid; gap:24px; align-items:start; }
 .recover-main .phone-shell { width:100%; }
 .error-banner { margin-bottom:16px; }
@@ -201,6 +201,108 @@ dialog .modal-body { overflow:auto; min-height:0; }
 .workflow-node.read { --node-fill:var(--workflow-read); --node-border:var(--workflow-read-border); }
 .wf-legend i { background:var(--node-fill); border:1px solid var(--node-border); }
 .workflow-title { fill:var(--ink); } .workflow-subtitle { fill:var(--muted); }
-@media(min-width:1000px) { .recover-main { max-width:920px; } .recover-columns { grid-template-columns:1fr 1fr; } }
+@media(min-width:1024px) { .recover-columns { grid-template-columns:minmax(0,58fr) minmax(0,42fr); } }
 @media(max-width:760px) { .sidebar { position:sticky; top:0; z-index:30; } .topbar { top:128px; } }
 @media(max-width:600px) { .standalone-chat .phone-shell { height:100dvh; max-height:100dvh; } .standalone-chat .phone-screen { height:100%; } .standalone-chat .phone-body { flex:1; overflow:hidden; } .standalone-chat .chat-log { flex:1; height:auto; min-height:0; max-height:none; } .standalone-chat .chips { flex:none; max-height:100px; overflow:auto; } }
+
+/* Review integrations: preserve the reference stylesheet verbatim. */
+.demo-dot.cancel { color:var(--red); }
+.demo-dot.delay { color:var(--demo-amber); }
+.refresh-status { display:flex; align-items:center; gap:4px; flex:none; }
+.refresh-status .fine { white-space:nowrap; }
+.refreshing { animation:refresh-spin 1s linear infinite; }
+@keyframes refresh-spin { to { transform:rotate(360deg); } }
+.recovery-progress { display:grid; gap:4px; margin-top:5px; }
+.recovery-progress small { font-size:10px; color:var(--muted); }
+.recovery-progress progress { display:block; width:110px; height:3px; appearance:none; border:0; border-radius:4px; overflow:hidden; background:var(--secondary); }
+.recovery-progress progress::-webkit-progress-bar { background:var(--secondary); }
+.recovery-progress progress::-webkit-progress-value { background:var(--blue); }
+.recovery-progress progress::-moz-progress-bar { background:var(--blue); }
+.activity-list .activity-empty { display:flex; gap:12px; align-items:center; padding:20px 0; color:var(--muted); white-space:normal; }
+.preview-tools { display:grid; grid-template-columns:minmax(0,1fr); gap:12px; }
+.preview-tools .segmented { justify-self:start; }
+.preview-tools select { width:100%; max-width:none; min-width:0; }
+.chat-heading { display:flex; align-items:center; gap:8px; flex:none; }
+.chat-heading strong { font-size:14px; }
+.chat-body { min-height:0; }
+.chat-messages { gap:10px; padding:6px 0 12px; }
+.chat-row .bubble { overflow-wrap:anywhere; }
+.chat-row.agent .bubble { background:transparent; color:var(--ink); padding-left:0; }
+.chat-row.user .bubble { background:var(--blue); color:var(--primary-foreground); }
+.chat-bottom { flex:none; min-width:0; }
+.chat-bottom .chips { max-height:118px; overflow:auto; overscroll-behavior:contain; }
+.chat-bottom .chip { white-space:normal; text-align:left; }
+.recovery-prompt { margin-top:12px; }
+.recovery-prompt [data-slot="input-group"] { display:flex; flex-direction:column; align-items:stretch; min-height:90px; background:var(--card); border-color:var(--line); border-radius:8px; }
+.recovery-prompt textarea { width:100%; min-height:42px; max-height:100px; resize:none; padding:10px 12px 0; font-size:13px; background:transparent; color:var(--ink); border:0; box-shadow:none; }
+.recovery-prompt .prompt-footer { justify-content:flex-end; padding:4px 8px 8px; }
+.recovery-prompt .icon-btn { width:32px; height:32px; min-height:32px; background:var(--blue); color:var(--primary-foreground); border-radius:6px; padding:0; }
+.assistant-phone .chat-log { overflow:hidden; padding:0; }
+.recovery-page { min-height:100dvh; }
+.recovery-page .passenger-header { padding:0 16px; position:sticky; top:0; z-index:25; }
+.recovery-header-inner { max-width:1088px; margin:auto; min-height:68px; display:grid; grid-template-columns:minmax(0,1fr) auto; align-items:center; gap:16px; }
+.airline-wordmark { display:flex; align-items:center; gap:10px; min-width:0; }
+.airline-wordmark strong { font-size:20px; }
+.airline-wordmark span { font-size:12px; color:var(--muted); border-left:1px solid var(--line); padding-left:14px; }
+.recovery-identity { display:grid; text-align:right; font-size:12px; }
+.recovery-identity span { color:var(--muted); font-size:11px; }
+.recovery-content { min-width:0; padding:4px 0; }
+.recovery-content .passenger-title { font-size:30px; line-height:1.25; }
+.recovery-content .passenger-intro { max-width:520px; }
+.recovery-content .flight-ticket { margin-top:24px; }
+.recovery-content .btn { white-space:normal; }
+.recovery-chat-desktop { position:sticky; top:88px; min-width:0; }
+.recovery-chat-card { height:calc(100vh - 112px); display:flex; flex-direction:column; overflow:hidden; }
+.recovery-chat-card .phone-brand { padding:16px 18px; border-bottom:1px solid var(--line); background:var(--card); color:var(--ink); }
+.recovery-chat-card .phone-body { padding:12px 18px 16px; flex:1; display:flex; flex-direction:column; overflow:hidden; }
+.recovery-chat-card .chat-log { flex:1; min-height:0; height:auto; max-height:none; overflow:hidden; margin:8px 0; padding:0; }
+.recovery-chat-card .passenger-top { gap:12px; min-width:0; flex:none; display:grid; grid-template-columns:minmax(0,1fr) auto; }
+.recovery-chat-card .passenger-top span { overflow-wrap:anywhere; }
+.sheet-close { display:none; margin-left:auto; }
+.assistant-launch { display:none; }
+.recovery-footer { padding:32px 0 24px; color:var(--muted); font-size:11px; text-align:center; }
+dialog.recovery-sheet { position:fixed; inset:var(--sheet-top,0px) 0 auto; margin:0; padding:0; width:100%; max-width:none; height:var(--sheet-height,100dvh); max-height:none; border:0; border-radius:0; background:var(--card); }
+.recovery-sheet .recovery-chat-card { width:100%; height:100%; border:0; border-radius:0; box-shadow:none; }
+.recovery-sheet .sheet-close { display:inline-grid; }
+.recovery-sheet .phone-body { padding-bottom:max(16px,env(safe-area-inset-bottom)); }
+@media(max-width:1200px) and (min-width:761px) { .topbar { height:auto; min-height:68px; flex-wrap:wrap; padding-top:10px; padding-bottom:10px; gap:8px; } .top-right { gap:10px; flex-wrap:wrap; } }
+@media(max-width:1023px) {
+ .recover-columns { grid-template-columns:minmax(0,1fr); }
+ .assistant-launch { position:fixed; right:16px; bottom:max(16px,env(safe-area-inset-bottom)); display:inline-flex; border-radius:999px; z-index:35; box-shadow:var(--shadow-card); }
+ .recovery-footer { padding-bottom:84px; }
+ .airline-wordmark { flex-wrap:wrap; gap:4px 8px; padding:12px 0; }
+ .airline-wordmark strong { font-size:17px; }
+ .airline-wordmark span { flex-basis:100%; padding-left:27px; border:0; }
+}
+@media(max-width:760px) {
+ .layout { width:100%; margin-left:0; }
+ .main { padding-left:16px; padding-right:16px; }
+ .topbar { display:grid; grid-template-columns:minmax(0,1fr) auto; height:auto; min-height:68px; padding:12px 16px; gap:8px; }
+ .top-search { min-width:0; width:100%; max-width:none; }
+ .top-right { grid-column:1 / -1; margin-left:0; width:100%; display:flex; flex-wrap:wrap; gap:8px 12px; }
+ .topbar .profile { margin-left:auto; padding-left:8px; gap:6px; }
+ .topbar .profile-text { display:none; }
+ .clock-city { display:none; }
+ .topbar .clock-btn { gap:4px; }
+ .card-head { display:grid; grid-template-columns:minmax(0,1fr); gap:12px; }
+ .card-head .segmented { justify-self:start; max-width:100%; }
+ .section-title { gap:10px; }
+ .page-title { display:grid; grid-template-columns:minmax(0,1fr) auto; min-width:0; margin-left:0; margin-right:0; }
+ .page-title .btn { white-space:normal; max-width:150px; }
+ .composer-context { display:grid; grid-template-columns:minmax(0,1fr); gap:8px; }
+ .context-flight { width:100%; max-width:100%; min-width:0; }
+ .context-recipients { text-align:left; }
+ .composer-tools { display:grid; grid-template-columns:minmax(0,1fr); gap:10px; }
+ .templates { flex-wrap:wrap; }
+ .filters { display:grid; grid-template-columns:minmax(0,1fr); }
+ .filters .field { width:100%; min-width:0; }
+ .table-bottom { gap:8px; flex-wrap:wrap; }
+ .main-footer { white-space:normal; }
+ .metric { min-width:0; }
+ .settings-row { display:grid; grid-template-columns:minmax(0,1fr) auto; gap:12px; }
+ .settings-row .settings-zone { max-width:130px; }
+ dialog.preview { width:calc(100% - 32px); max-width:calc(100% - 32px); }
+ .preview .modal-body { padding:16px; }
+ .preview .phone-shell { width:100%; max-width:100%; }
+}
+@media(prefers-reduced-motion:reduce) { .refreshing { animation:none; } }
