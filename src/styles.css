@@ -182,10 +182,21 @@ dialog .modal-body { overflow:auto; min-height:0; }
 .settings-zone { max-width:175px; }
 .workflow-svg { color:var(--ink); }
 .workflow-line { stroke:var(--demo-gray); fill:none; }
-.workflow-node { fill:var(--accent); stroke:var(--demo-blue); }
-.workflow-node.gate { fill:var(--secondary); stroke:var(--demo-amber); }
-.workflow-node.agent { fill:var(--accent); stroke:var(--demo-blue); }
-.wf-legend i { background:var(--accent); border:1px solid var(--demo-blue); }
+:root {
+ --workflow-code:oklch(0.968 0.006 260); --workflow-code-border:oklch(0.821 0.029 257);
+ --workflow-agent:oklch(0.953 0.027 299); --workflow-agent-border:oklch(0.706 0.126 298);
+ --workflow-gate:oklch(0.97 0.024 75); --workflow-gate-border:oklch(0.827 0.11 78);
+ --workflow-write:oklch(0.967 0.027 68); --workflow-write-border:oklch(0.81 0.099 68);
+ --workflow-output:oklch(0.966 0.019 163); --workflow-output-border:oklch(0.795 0.097 163);
+ --workflow-read:oklch(0.959 0.02 259); --workflow-read-border:oklch(0.769 0.098 258);
+}
+.workflow-node { --node-fill:var(--workflow-code); --node-border:var(--workflow-code-border); fill:var(--node-fill); stroke:var(--node-border); }
+.workflow-node.gate { --node-fill:var(--workflow-gate); --node-border:var(--workflow-gate-border); }
+.workflow-node.agent { --node-fill:var(--workflow-agent); --node-border:var(--workflow-agent-border); }
+.workflow-node.write { --node-fill:var(--workflow-write); --node-border:var(--workflow-write-border); }
+.workflow-node.output { --node-fill:var(--workflow-output); --node-border:var(--workflow-output-border); }
+.workflow-node.read { --node-fill:var(--workflow-read); --node-border:var(--workflow-read-border); }
+.wf-legend i { background:var(--node-fill); border:1px solid var(--node-border); }
 .workflow-title { fill:var(--ink); } .workflow-subtitle { fill:var(--muted); }
 @media(min-width:1000px) { .recover-main { max-width:920px; } .recover-columns { grid-template-columns:1fr 1fr; } }
 @media(max-width:760px) { .sidebar { position:sticky; top:0; z-index:30; } .topbar { top:128px; } }
