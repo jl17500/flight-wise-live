@@ -170,7 +170,7 @@ dialog .modal-body { overflow:auto; min-height:0; }
 .demo-dot.help,.demo-dot.blocked { color:var(--demo-orange); }
 .demo-dot.staged { color:var(--demo-blue); }
 .demo-dot.declined,.demo-dot.expired { color:var(--demo-gray); }
-.ticket-end { text-align:right; } .option .option-times { font-size:19px; }
+.ticket-end { text-align:right; }
 .passenger-header { padding:17px 26px; border-bottom:1px solid var(--line); background:var(--card); font-weight:650; }
 .passenger-header .icon { color:var(--blue); }
 .recover-main { max-width:440px; margin:auto; padding:24px 16px; }
@@ -185,6 +185,7 @@ dialog .modal-body { overflow:auto; min-height:0; }
 .workflow-node { fill:var(--accent); stroke:var(--demo-blue); }
 .workflow-node.gate { fill:var(--secondary); stroke:var(--demo-amber); }
 .workflow-node.agent { fill:var(--accent); stroke:var(--demo-blue); }
+.wf-legend i { background:var(--accent); border:1px solid var(--demo-blue); }
 .workflow-title { fill:var(--ink); } .workflow-subtitle { fill:var(--muted); }
 @media(min-width:1000px) { .recover-main { max-width:920px; } .recover-columns { grid-template-columns:1fr 1fr; } }
 @media(max-width:760px) { .sidebar { position:sticky; top:0; z-index:30; } .topbar { top:128px; } }

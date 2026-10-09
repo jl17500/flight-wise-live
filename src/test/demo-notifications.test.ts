@@ -1,5 +1,6 @@
 import { describe, expect, it } from 'vitest';
-import { clampSidebar, DEFAULT_ZONE, REFRESH_INTERVAL, deliveryStats, finalizeBatch, sampleBatch } from '@/lib/demo-notifications';
+import { clampSidebar, DEFAULT_ZONE, REFRESH_INTERVAL, deliveryStats, finalizeBatch, sampleBatch, awaitingPassengers } from '@/lib/demo-notifications';
+import type { OpsData } from '@/lib/flightfix';
 
 describe('FlightFix redesign rules', () => {
   it('keeps sidebar resizing between 72 and 252 pixels', () => {
@@ -24,5 +25,10 @@ describe('FlightFix redesign rules', () => {
     const result=finalizeBatch({...sampleBatch(),recipientCount:8,delivered:0,failed:0,pending:8});
     expect(result.pending).toBe(0);
     expect(result.delivered+result.failed).toBe(8);
+  });
+  it('keeps failed recipients eligible for an update and excludes scheduled flights', () => {
+    const d = {flights:[{flight_no:'NS214',status:'cancelled'},{flight_no:'NS316',status:'scheduled'}],passengers:[{booking_ref:'FX1001',flight_no:'NS214'},{booking_ref:'FX1002',flight_no:'NS214'},{booking_ref:'FX1003',flight_no:'NS316'}]} as OpsData;
+    const batch={...sampleBatch(),flightId:'NS214',flightStatus:'cancelled',recipientIds:['FX1001','FX1002'],delivered:1,failed:1,deliveredIds:['FX1001'],failedIds:['FX1002']};
+    expect(awaitingPassengers(d,[batch]).map(p=>p.booking_ref)).toEqual(['FX1002']);
   });
 });
