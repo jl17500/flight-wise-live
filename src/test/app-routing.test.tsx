@@ -14,4 +14,10 @@ describe("App routing", () => {
 
     expect(matches.at(-1)?.routeId).not.toBe(rootRouteId);
   });
+  it("matches all seven demo pages and the standalone recovery page", () => {
+    const router = createRouter({ routeTree, context: { queryClient: new QueryClient() } });
+    for (const path of ["/", "/flights", "/passengers", "/messages", "/assistant", "/analytics", "/settings", "/recover/example"]) {
+      expect(router.matchRoutes(path).at(-1)?.routeId).not.toBe(rootRouteId);
+    }
+  });
 });
