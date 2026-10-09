@@ -171,6 +171,8 @@
 .topbar { position:sticky; top:0; z-index:25; backdrop-filter:blur(12px); }
 .layout { min-width:0; } .main { min-width:0; }
 dialog[open] { display:flex; flex-direction:column; overflow:hidden; }
+dialog { margin:auto; }
+@media(min-width:761px) { :root { --sidebar:var(--sidebar-width,220px); } }
 dialog .modal-head, dialog .modal-actions { flex:none; }
 dialog .modal-body { overflow:auto; min-height:0; }
 .preview-tools { position:sticky; top:0; background:var(--card); z-index:2; padding-bottom:12px; padding-top:4px; }
