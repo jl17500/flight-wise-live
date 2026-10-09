@@ -153,6 +153,9 @@
 /* Integration rules only; the original demo stylesheet remains unchanged. */
 :root { --logo-fill: oklch(0.21 0.008 260); --logo-stroke: oklch(1 0 0); --demo-green: oklch(0.69 0.15 162); --demo-amber: oklch(0.66 0.12 78); --demo-orange: oklch(0.67 0.17 48); --demo-blue: oklch(0.57 0.22 258); --demo-gray: oklch(0.65 0.03 260); }
 .logo-fill { fill:var(--logo-fill); } .logo-path { stroke:var(--logo-stroke); }
+.sidebar .sidebar-lucide { width:18px; height:18px; flex:none; color:var(--muted-foreground); }
+.topbar .profile { cursor:default; }
+.topbar .profile-text { display:block; }
 .topbar { position:sticky; top:0; z-index:25; backdrop-filter:blur(12px); }
 .layout { min-width:0; } .main { min-width:0; }
 dialog[open] { display:flex; flex-direction:column; overflow:hidden; }

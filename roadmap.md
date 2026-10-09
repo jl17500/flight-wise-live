@@ -1,5 +1,4 @@
-# FlightFix redesign
-- [x] Port original global stylesheet, icons and shared shell with sidebar controls.
-- [x] Implement all seven pages using live operations data and simulated notification history.
-- [x] Port passenger recovery and live assistant into preview and standalone page.
-- [x] Verify routing, required rules, live flows and scrolling.
+# FlightFix class demo simplification
+- [x] Replace sidebar and collapse icons while keeping resize and collapse.
+- [x] Remove three pages, clutter, obsolete links and simplify Settings.
+- [x] Verify remaining routes, table expansion, preview and live chat.
