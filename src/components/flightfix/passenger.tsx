@@ -26,15 +26,18 @@ export function PassengerContent({d,onAsk,standalone=false}: {d:PassengerData;on
  </div>;
  return standalone?content:<div className="phone-shell"><div className="phone-screen"><div className="phone-brand"><Icon name="plane"/>FlightFix</div>{content}</div></div>;
 }
+/** One hidden "Hi" per sessionId, shared across StrictMode re-runs and remounts. Failed greetings may be retried. */
+const greetings=new Map<string,Promise<string>>();
+function greetOnce(id:string,token:string){let p=greetings.get(id);if(!p){p=sendChat(id,'Hi',token);greetings.set(id,p);p.catch(()=>greetings.delete(id));}return p;}
 const DEFAULT_CHIPS=['What happened to my flight?','What are my options?','Book the earliest flight','Land before 3 PM, otherwise refund me','Anything before 6?',"I'd like a refund instead",'Book a flight and refund me too','Can I get a hotel voucher?'];
 export function AssistantChat({token,d,initialMessage,onConsumed,standalone=false,onClose,refreshOps=false,dataVersion}: {token:string;d:PassengerData;apiRef?:React.RefObject<ChatHandle|null>;initialMessage?:string|undefined;onConsumed?:()=>void;standalone?:boolean;onClose?:()=>void;refreshOps?:boolean;dataVersion?:string|undefined}) {
  const client=useQueryClient(),[sid,setSid]=useState<string|null>(null),[msgs,setMsgs]=useState<Message[]>([]),[busy,setBusy]=useState(false),[input,setInput]=useState('');
  const busyRef=useRef(false),pendingRef=useRef(initialMessage),generation=useRef(0),loaded=useRef(false);
  const version=dataVersion??d.data_version, sidKey=`ff-sid-${token}`,msgKey=`ff-msgs-${token}`,versionKey=`ff-version-${token}`;
- const run=useCallback(async(text:string,hidden:boolean,id:string,epoch:number)=>{
-  busyRef.current=true;setBusy(true);setMsgs(m=>[...m.filter(x=>x.role!=='error'),...(hidden?[]:[{role:'user' as const,text}])]);
-  try {const reply=await sendChat(id,text,token);if(epoch!==generation.current)return;setMsgs(m=>[...m,{role:'assistant',text:reply}]);
-   if(shouldRefreshRecovery(text,reply))await Promise.all([client.invalidateQueries({queryKey:['passenger',token]}),...(refreshOps?[client.invalidateQueries({queryKey:['ops']})]:[])]);
+  const run=useCallback(async(text:string,hidden:boolean,id:string,epoch:number)=>{
+   busyRef.current=true;setBusy(true);setMsgs(m=>[...m.filter(x=>x.role!=='error'),...(hidden?[]:[{role:'user' as const,text}])]);
+   try {const reply=hidden?await greetOnce(id,token):await sendChat(id,text,token);if(epoch!==generation.current)return;setMsgs(m=>[...m,{role:'assistant',text:reply}]);
+    if(!hidden&&shouldRefreshRecovery(text,reply))await Promise.all([client.invalidateQueries({queryKey:['passenger',token]}),...(refreshOps?[client.invalidateQueries({queryKey:['ops']})]:[])]);
   } catch {if(epoch===generation.current)setMsgs(m=>[...m,{role:'error',text:"I couldn't reach the assistant. Nothing was changed. Try again.",retry:text,hidden}]);}
   finally {if(epoch===generation.current){busyRef.current=false;setBusy(false);}}
  },[token,client,refreshOps]);
