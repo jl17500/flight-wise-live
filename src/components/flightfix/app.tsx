@@ -11,6 +11,7 @@ import {
   RadioTower,
 } from "lucide-react";
 import { Toaster } from "@/components/ui/sonner";
+import { useTableSort, type SortColumn } from "@/lib/table-sort";
 import { DATA_STALE_TIME, OPS_POLL_INTERVAL, recoveryProgress } from "@/lib/recovery-policy";
 import { fetchOps, type OpsData, type RecoveryStatus } from "@/lib/flightfix";
 import {
@@ -438,10 +439,68 @@ function Metrics() {
     </div>
   );
 }
+type FlightRow = OpsData["flights"][number];
+type PassengerRow = OpsData["passengers"][number];
+const RISK_RANK: Record<string, number> = { normal: 0, low: 1, medium: 2, high: 3 };
+const FLIGHT_STATUS_RANK: Record<string, number> = { scheduled: 0, delayed: 1, cancelled: 2 };
+const RECOVERY_RANK: Record<RecoveryStatus, number> = {
+  needs_help: 0,
+  waiting: 1,
+  refund_pending: 2,
+  rebooked: 3,
+  scheduled: 4,
+};
+const FLIGHT_COLUMNS: Record<string, SortColumn<FlightRow>> = {
+  Risk: { value: (f) => RISK_RANK[f.risk_level] ?? 0, first: "desc" },
+  Flight: { value: (f) => f.flight_no },
+  Route: { value: (f) => `${f.origin} ${f.destination}` },
+  Scheduled: { value: (f) => f.departs_at ?? f.departs },
+  "Est. risk": { value: (f) => f.est_risk_pct, first: "desc" },
+  Issue: { value: (f) => f.risk_signal },
+  Status: {
+    value: (f) =>
+      (FLIGHT_STATUS_RANK[f.status] ?? 0) * 1000 +
+      (f.passengers ? 999 - Math.round((f.resolved / f.passengers) * 999) : 0),
+    first: "desc",
+  },
+};
+const PASSENGER_COLUMNS: Record<string, SortColumn<PassengerRow>> = {
+  Passenger: { value: (p) => p.name },
+  Booking: { value: (p) => p.booking_ref },
+  Status: { value: (p) => RECOVERY_RANK[p.recovery_status] },
+  Outcome: { value: (p) => p.outcome },
+};
+function SortHeader({
+  label,
+  sortable,
+  state,
+  onSort,
+}: {
+  label: string;
+  sortable: boolean;
+  state: "ascending" | "descending" | "none";
+  onSort: () => void;
+}) {
+  if (!sortable)
+    return (
+      <th scope="col">{label === "Details" ? <span className="sr-only">Details</span> : label}</th>
+    );
+  return (
+    <th scope="col" aria-sort={state}>
+      <button type="button" className={`sort-header ${state}`} onClick={onSort}>
+        {label}
+        <span className="sort-arrow" aria-hidden="true">
+          {state === "ascending" ? "▲" : state === "descending" ? "▼" : "↕"}
+        </span>
+      </button>
+    </th>
+  );
+}
 function FlightTable({ full = false }: { full?: boolean }) {
   const a = useApp(),
     [filter, setFilter] = useState("all"),
-    [showAll, setShowAll] = useState(false);
+    [showAll, setShowAll] = useState(false),
+    sorter = useTableSort(FLIGHT_COLUMNS);
   if (!a.d) return null;
   const q = a.search.toLowerCase();
   const all = a.d.flights,
@@ -457,7 +516,8 @@ function FlightTable({ full = false }: { full?: boolean }) {
         .toLowerCase()
         .includes(q),
   );
-  const shown = full || showAll ? items : items.slice(0, 5);
+  const sorted = sorter.apply(items);
+  const shown = full || showAll ? sorted : sorted.slice(0, 5);
   return (
     <>
       <div className="card-head">
@@ -497,9 +557,13 @@ function FlightTable({ full = false }: { full?: boolean }) {
                 "Status",
                 "Details",
               ].map((h) => (
-                <th key={h} scope="col">
-                  {h === "Details" ? <span className="sr-only">Details</span> : h}
-                </th>
+                <SortHeader
+                  key={h}
+                  label={h}
+                  sortable={h in FLIGHT_COLUMNS}
+                  state={sorter.ariaSort(h)}
+                  onSort={() => sorter.toggle(h)}
+                />
               ))}
             </tr>
           </thead>
@@ -788,7 +852,8 @@ function Passengers() {
   const a = useApp(),
     [filter, setFilter] = useState("all"),
     [search, setSearch] = useState(""),
-    [page, setPage] = useState(1);
+    [page, setPage] = useState(1),
+    sorter = useTableSort(PASSENGER_COLUMNS);
   const pax =
     a.d?.passengers.filter(
       (p) =>
@@ -799,7 +864,7 @@ function Passengers() {
     ) ?? [];
   const pages = Math.max(1, Math.ceil(pax.length / 10)),
     current = Math.min(page, pages),
-    shown = pax.slice((current - 1) * 10, current * 10);
+    shown = sorter.apply(pax).slice((current - 1) * 10, current * 10);
   return (
     <>
       <Title>Passengers</Title>
@@ -865,7 +930,16 @@ function Passengers() {
             <thead>
               <tr>
                 {["Passenger", "Booking", "Status", "Outcome", "Actions"].map((h) => (
-                  <th key={h}>{h}</th>
+                  <SortHeader
+                    key={h}
+                    label={h}
+                    sortable={h in PASSENGER_COLUMNS}
+                    state={sorter.ariaSort(h)}
+                    onSort={() => {
+                      sorter.toggle(h);
+                      setPage(1);
+                    }}
+                  />
                 ))}
               </tr>
             </thead>
