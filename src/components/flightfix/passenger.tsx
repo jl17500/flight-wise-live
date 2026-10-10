@@ -26,9 +26,9 @@ export function PassengerContent({d,onAsk,standalone=false}: {d:PassengerData;on
  </div>;
  return standalone?content:<div className="phone-shell"><div className="phone-screen"><div className="phone-brand"><Icon name="plane"/>FlightFix</div>{content}</div></div>;
 }
-/** One hidden "Hi" per sessionId, shared across StrictMode re-runs and remounts. Failed greetings may be retried. */
-const greetings=new Map<string,Promise<string>>();
-function greetOnce(id:string,token:string){let p=greetings.get(id);if(!p){p=sendChat(id,'Hi',token);greetings.set(id,p);p.catch(()=>greetings.delete(id));}return p;}
+/** One hidden "Hi" per sessionId, shared across StrictMode re-runs and remounts. The promise is stored before sending so a second effect run awaits the in-flight request instead of sending again. Entries are removed on session reset, data_version change, or failure (so Retry can resend). */
+const greetingBySession=new Map<string,Promise<string>>();
+function greetOnce(id:string,token:string){let p=greetingBySession.get(id);if(!p){p=sendChat(id,'Hi',token);greetingBySession.set(id,p);p.catch(()=>greetingBySession.delete(id));}return p;}
 const DEFAULT_CHIPS=['What happened to my flight?','What are my options?','Book the earliest flight','Land before 3 PM, otherwise refund me','Anything before 6?',"I'd like a refund instead",'Book a flight and refund me too','Can I get a hotel voucher?'];
 export function AssistantChat({token,d,initialMessage,onConsumed,standalone=false,onClose,refreshOps=false,dataVersion}: {token:string;d:PassengerData;apiRef?:React.RefObject<ChatHandle|null>;initialMessage?:string|undefined;onConsumed?:()=>void;standalone?:boolean;onClose?:()=>void;refreshOps?:boolean;dataVersion?:string|undefined}) {
  const client=useQueryClient(),[sid,setSid]=useState<string|null>(null),[msgs,setMsgs]=useState<Message[]>([]),[busy,setBusy]=useState(false),[input,setInput]=useState('');
@@ -41,21 +41,23 @@ export function AssistantChat({token,d,initialMessage,onConsumed,standalone=fals
   } catch {if(epoch===generation.current)setMsgs(m=>[...m,{role:'error',text:"I couldn't reach the assistant. Nothing was changed. Try again.",retry:text,hidden}]);}
   finally {if(epoch===generation.current){busyRef.current=false;setBusy(false);}}
  },[token,client,refreshOps]);
+ const runRef=useRef(run);runRef.current=run;
  useEffect(()=>{
   const epoch=++generation.current;loaded.current=false;let id:string|null=null,saved:Message[]=[];
-  try {if(sessionMatchesVersion(sessionStorage.getItem(versionKey),version)){id=sessionStorage.getItem(sidKey);saved=JSON.parse(sessionStorage.getItem(msgKey)||'[]');}}
+  try {if(sessionMatchesVersion(sessionStorage.getItem(versionKey),version)){id=sessionStorage.getItem(sidKey);saved=JSON.parse(sessionStorage.getItem(msgKey)||'[]');}
+  else {const old=sessionStorage.getItem(sidKey);if(old)greetingBySession.delete(old);}}
   catch {}
   if(!id)id=crypto.randomUUID();
   try {sessionStorage.setItem(sidKey,id);sessionStorage.setItem(versionKey,version??'');sessionStorage.setItem(msgKey,JSON.stringify(saved));}catch {}
   setSid(id);setMsgs(saved);loaded.current=true;busyRef.current=false;setBusy(false);
-  if(!saved.length)void run('Hi',true,id,epoch);
+  if(!saved.length)void runRef.current('Hi',true,id,epoch);
   return()=>{generation.current++;};
- },[sidKey,msgKey,versionKey,version,run]);
+ },[sidKey,msgKey,versionKey,version]);
  useEffect(()=>{if(sid&&loaded.current)try{if(sessionStorage.getItem(sidKey)===sid)sessionStorage.setItem(msgKey,JSON.stringify(msgs.filter(m=>m.role!=='error')));}catch {}},[msgs,sid,msgKey,sidKey]);
  const send=useCallback((text:string)=>{const t=text.trim().slice(0,400);if(!t||busyRef.current||!sid)return;setInput('');void run(t,false,sid,generation.current);},[sid,run]);
  useEffect(()=>{if(initialMessage)pendingRef.current=initialMessage;},[initialMessage]);
  useEffect(()=>{if(sid&&!busy&&msgs.some(m=>m.role==='assistant')&&pendingRef.current){const text=pendingRef.current;pendingRef.current=undefined;send(text);onConsumed?.();}},[busy,sid,msgs,send,onConsumed]);
- const reset=()=>{if(busyRef.current)return;const id=crypto.randomUUID();try{sessionStorage.setItem(sidKey,id);sessionStorage.setItem(versionKey,version??'');sessionStorage.removeItem(msgKey);}catch{}setSid(id);setMsgs([]);void run('Hi',true,id,++generation.current);};
+ const reset=()=>{if(busyRef.current)return;if(sid)greetingBySession.delete(sid);const id=crypto.randomUUID();try{sessionStorage.setItem(sidKey,id);sessionStorage.setItem(versionKey,version??'');sessionStorage.removeItem(msgKey);}catch{}setSid(id);setMsgs([]);void run('Hi',true,id,++generation.current);};
  const last=msgs.filter(m=>m.role!=='error').at(-1),confirm=!busy&&last?.role==='assistant'&&/reply yes/i.test(last.text);
  const chips=d.flight.status!=='cancelled'?['Is my flight going to be delayed?','Please connect me with a person']:d.outcome?[d.outcome.type==='rebooked'?"Actually, I want a refund instead":'Can I book a flight instead?','Thanks']:DEFAULT_CHIPS;
  const content=<><div className="phone-brand chat-heading"><Icon name="chat"/><strong>{standalone?'Northstar Air assistant':'Recovery Assistant'}</strong>{standalone&&onClose&&<Button className="icon-btn sheet-close" aria-label="Close assistant" onClick={onClose}><Icon name="close"/></Button>}</div><div className="phone-body chat-body"><div className="passenger-top"><span>{d.passenger.first_name} {d.passenger.last_name} · {d.passenger.booking_ref}</span><Button className="link-btn" onClick={reset} disabled={busy}>Clear chat</Button></div>
