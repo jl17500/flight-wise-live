@@ -8,7 +8,7 @@ vi.mock('@/components/ai-elements/conversation',()=>({Conversation:({children}:{
 vi.mock('@/components/ai-elements/message',()=>({Message:({children}:{children:React.ReactNode})=><div>{children}</div>,MessageContent:({children}:{children:React.ReactNode})=><div>{children}</div>,MessageResponse:({children}:{children:React.ReactNode})=><div>{children}</div>}));
 vi.mock('@/components/ai-elements/shimmer',()=>({Shimmer:()=>null}));
 vi.mock('@/components/ai-elements/prompt-input',()=>({PromptInput:({children}:{children:React.ReactNode})=><div>{children}</div>,PromptInputTextarea:()=>null,PromptInputFooter:({children}:{children:React.ReactNode})=><div>{children}</div>,PromptInputSubmit:()=>null}));
-const data={ok:true,data_version:'v1',passenger:{first_name:'Test',last_name:'Passenger',booking_ref:'test'},flight:{status:'cancelled'},options:[],outcome:null} as PassengerData;
+const data={ok:true,data_version:'v1',passenger:{first_name:'Test',last_name:'Passenger',booking_ref:'test'},flight:{status:'cancelled'},options:[],outcome:null} as unknown as PassengerData;
 describe('Chat execution lifecycle',()=>{
  beforeEach(()=>{sessionStorage.clear();vi.clearAllMocks();vi.mocked(sendChat).mockResolvedValue('Welcome. What would you like?');});
  it('starts hidden Hi once and does not refresh for an informational reply',async()=>{
