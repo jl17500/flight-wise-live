@@ -91,8 +91,12 @@ export function LiveBoard() {
   const resolved = joined.filter((p) =>
     ["rebooked", "refund_pending", "needs_help"].includes(p.recovery_status),
   );
-  const allDone = cancelled && joined.length > 0 && resolved.length === joined.length;
-  const doneAt = allDone && cancelledAt ? firstSeen("done", now) : undefined;
+  // "All resolved" waits for a few people to join, so early birds don't end the race.
+  const allDone = cancelled && joined.length >= 3 && resolved.length === joined.length;
+  // When the last joined passenger settled; recomputed each poll, so late joiners reopen the clock.
+  const doneAt = allDone
+    ? Math.max(...resolved.map((p) => +new Date(p.updated_at)).filter(Number.isFinite))
+    : undefined;
   const soldOut = seats
     .filter((s) => s.seats_left === 0 && cancelledAt)
     .map((s) => {
