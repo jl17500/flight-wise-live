@@ -1,5 +1,6 @@
 import { act, render, waitFor } from '@testing-library/react';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import { StrictMode } from 'react';
 import { describe, expect, it, vi, beforeEach } from 'vitest';
 import { AssistantChat } from '@/components/flightfix/passenger';
 import { sendChat, type PassengerData } from '@/lib/flightfix';
@@ -27,14 +28,26 @@ describe('Chat execution lifecycle',()=>{
   view.rerender(<QueryClientProvider client={client}><AssistantChat token="test" d={{...data,data_version:'v2'}}/></QueryClientProvider>);
   await waitFor(()=>expect(sendChat).toHaveBeenCalledTimes(2));expect(vi.mocked(sendChat).mock.calls[1]?.[0]).not.toBe(first);expect(sessionStorage.getItem('ff-version-test')).toBe('v2');view.unmount();
  });
- it('refreshes passenger only on confirmed reply outside preview',async()=>{
+ it('sends exactly one request for a new session under StrictMode',async()=>{
+  const client=new QueryClient();const invalidate=vi.spyOn(client,'invalidateQueries');
+  const view=render(<StrictMode><QueryClientProvider client={client}><AssistantChat token="test" d={data} refreshOps/></QueryClientProvider></StrictMode>);
+  await waitFor(()=>expect(sendChat).toHaveBeenCalledTimes(1));await act(async()=>{await new Promise(r=>setTimeout(r,20));});
+  expect(sendChat).toHaveBeenCalledTimes(1);expect(invalidate).not.toHaveBeenCalled();view.unmount();
+ });
+ it('never refreshes after the hidden Hi reply',async()=>{
   vi.mocked(sendChat).mockResolvedValue('Confirmed');const client=new QueryClient();const invalidate=vi.spyOn(client,'invalidateQueries');
-  const view=render(<QueryClientProvider client={client}><AssistantChat token="test" d={data}/></QueryClientProvider>);
+  const view=render(<QueryClientProvider client={client}><AssistantChat token="test" d={data} refreshOps/></QueryClientProvider>);
+  await waitFor(()=>expect(sendChat).toHaveBeenCalledTimes(1));await act(async()=>{await new Promise(r=>setTimeout(r,20));});
+  expect(invalidate).not.toHaveBeenCalled();view.unmount();
+ });
+ it('refreshes passenger only on confirmed reply outside preview',async()=>{
+  vi.mocked(sendChat).mockResolvedValueOnce('Welcome').mockResolvedValueOnce('Confirmed');const client=new QueryClient();const invalidate=vi.spyOn(client,'invalidateQueries');
+  const view=render(<QueryClientProvider client={client}><AssistantChat token="test" d={data} initialMessage="YES"/></QueryClientProvider>);
   await waitFor(()=>expect(invalidate).toHaveBeenCalledWith({queryKey:['passenger','test']}));expect(invalidate).toHaveBeenCalledTimes(1);view.unmount();
  });
  it('refreshes ops as well behind preview after a qualifying reply',async()=>{
-  vi.mocked(sendChat).mockResolvedValue('I passed your case to the airline team');const client=new QueryClient();const invalidate=vi.spyOn(client,'invalidateQueries');
-  const view=render(<QueryClientProvider client={client}><AssistantChat token="test" d={data} refreshOps/></QueryClientProvider>);
+  vi.mocked(sendChat).mockResolvedValueOnce('Welcome').mockResolvedValueOnce('I passed your case to the airline team');const client=new QueryClient();const invalidate=vi.spyOn(client,'invalidateQueries');
+  const view=render(<QueryClientProvider client={client}><AssistantChat token="test" d={data} refreshOps initialMessage="Please connect me with a person"/></QueryClientProvider>);
   await waitFor(()=>expect(invalidate).toHaveBeenCalledTimes(2));expect(invalidate).toHaveBeenCalledWith({queryKey:['ops']});view.unmount();
  });
 });
