@@ -11,6 +11,7 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as AssistantRouteImport } from './routes/assistant'
+import { Route as LiveRouteImport } from './routes/live'
 import { Route as PassengersRouteImport } from './routes/passengers'
 import { Route as SettingsRouteImport } from './routes/settings'
 import { Route as RecoverTokenRouteImport } from './routes/recover.$token'
@@ -23,6 +24,11 @@ const IndexRoute = IndexRouteImport.update({
 const AssistantRoute = AssistantRouteImport.update({
   id: '/assistant',
   path: '/assistant',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const LiveRoute = LiveRouteImport.update({
+  id: '/live',
+  path: '/live',
   getParentRoute: () => rootRouteImport,
 } as any)
 const PassengersRoute = PassengersRouteImport.update({
@@ -44,6 +50,7 @@ const RecoverTokenRoute = RecoverTokenRouteImport.update({
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/assistant': typeof AssistantRoute
+  '/live': typeof LiveRoute
   '/passengers': typeof PassengersRoute
   '/settings': typeof SettingsRoute
   '/recover/$token': typeof RecoverTokenRoute
@@ -51,6 +58,7 @@ export interface FileRoutesByFullPath {
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/assistant': typeof AssistantRoute
+  '/live': typeof LiveRoute
   '/passengers': typeof PassengersRoute
   '/settings': typeof SettingsRoute
   '/recover/$token': typeof RecoverTokenRoute
@@ -59,6 +67,7 @@ export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/assistant': typeof AssistantRoute
+  '/live': typeof LiveRoute
   '/passengers': typeof PassengersRoute
   '/settings': typeof SettingsRoute
   '/recover/$token': typeof RecoverTokenRoute
@@ -66,13 +75,25 @@ export interface FileRoutesById {
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
-    '/' | '/assistant' | '/passengers' | '/settings' | '/recover/$token'
+    | '/'
+    | '/assistant'
+    | '/live'
+    | '/passengers'
+    | '/settings'
+    | '/recover/$token'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/assistant' | '/passengers' | '/settings' | '/recover/$token'
+  to:
+    | '/'
+    | '/assistant'
+    | '/live'
+    | '/passengers'
+    | '/settings'
+    | '/recover/$token'
   id:
     | '__root__'
     | '/'
     | '/assistant'
+    | '/live'
     | '/passengers'
     | '/settings'
     | '/recover/$token'
@@ -81,6 +102,7 @@ export interface FileRouteTypes {
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AssistantRoute: typeof AssistantRoute
+  LiveRoute: typeof LiveRoute
   PassengersRoute: typeof PassengersRoute
   SettingsRoute: typeof SettingsRoute
   RecoverTokenRoute: typeof RecoverTokenRoute
@@ -100,6 +122,13 @@ declare module '@tanstack/react-router' {
       path: '/assistant'
       fullPath: '/assistant'
       preLoaderRoute: typeof AssistantRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/live': {
+      id: '/live'
+      path: '/live'
+      fullPath: '/live'
+      preLoaderRoute: typeof LiveRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/passengers': {
@@ -129,6 +158,7 @@ declare module '@tanstack/react-router' {
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AssistantRoute: AssistantRoute,
+  LiveRoute: LiveRoute,
   PassengersRoute: PassengersRoute,
   SettingsRoute: SettingsRoute,
   RecoverTokenRoute: RecoverTokenRoute,

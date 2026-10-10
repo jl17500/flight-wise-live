@@ -31,4 +31,8 @@ describe('FlightFix redesign rules', () => {
     const batch={...sampleBatch(),flightId:'NS214',flightStatus:'cancelled',recipientIds:['FX1001','FX1002'],delivered:1,failed:1,deliveredIds:['FX1001'],failedIds:['FX1002']};
     expect(awaitingPassengers(d,[batch]).map(p=>p.booking_ref)).toEqual(['FX1002']);
   });
+  it('skips passengers already emailed for this flight or already resolved', () => {
+    const d = {flights:[{flight_no:'NS612',status:'cancelled'}],passengers:[{booking_ref:'FX1601',flight_no:'NS612',recovery_status:'waiting',notified_flight:'NS612'},{booking_ref:'FX1602',flight_no:'NS612',recovery_status:'rebooked'},{booking_ref:'FX1603',flight_no:'NS612',recovery_status:'waiting',notified_flight:null}]} as OpsData;
+    expect(awaitingPassengers(d,[]).map(p=>p.booking_ref)).toEqual(['FX1603']);
+  });
 });
